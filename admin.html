@@ -1,0 +1,32 @@
+<form id="scoreForm">
+    <input type="number" id="roundNum" placeholder="Round Number" required>
+    <input type="number" id="srijit" placeholder="Srijit Score" required>
+    <input type="number" id="bitansh" placeholder="Bitansh Score" required>
+    <input type="number" id="sandy" placeholder="Sandy Score" required>
+    <input type="number" id="debarshi" placeholder="Debarshi Score" required>
+    <input type="number" id="soumik" placeholder="Soumik Score" required>
+    <button type="submit">Publish Round Results</button>
+</form>
+
+<script>
+    // Initialize Supabase client here as well...
+    document.getElementById('scoreForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const { data, error } = await supabase
+          .from('matchdays')
+          .insert([
+            { 
+               round_number: document.getElementById('roundNum').value,
+               srijit_score: document.getElementById('srijit').value,
+               bitansh_score: document.getElementById('bitansh').value,
+               sandy_score: document.getElementById('sandy').value,
+               debarshi_score: document.getElementById('debarshi').value,
+               soumik_score: document.getElementById('soumik').value
+            }
+          ]);
+          
+        if(error) alert("Error saving matchday!");
+        else alert("Round published successfully!");
+    });
+</script>
