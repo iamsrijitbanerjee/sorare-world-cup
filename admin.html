@@ -1,32 +1,146 @@
-<form id="scoreForm">
-    <input type="number" id="roundNum" placeholder="Round Number" required>
-    <input type="number" id="srijit" placeholder="Srijit Score" required>
-    <input type="number" id="bitansh" placeholder="Bitansh Score" required>
-    <input type="number" id="sandy" placeholder="Sandy Score" required>
-    <input type="number" id="debarshi" placeholder="Debarshi Score" required>
-    <input type="number" id="soumik" placeholder="Soumik Score" required>
-    <button type="submit">Publish Round Results</button>
-</form>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TERMINAL | Admin Score Input</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Rajdhani:wght@700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body {
+            background-color: #060813;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: center;
+        }
+        .admin-card {
+            background: rgba(18, 26, 46, 0.8);
+            border: 1px solid #1F3354;
+            padding: 1.5rem;
+            border-radius: 16px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        h2 {
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            color: #00E5FF;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            font-size: 0.75rem;
+            color: #8FA3BF;
+            text-transform: uppercase;
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+        }
+        input {
+            width: 100%;
+            padding: 0.8rem;
+            background: #03050D;
+            border: 1px solid #1F3354;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+        }
+        input:focus {
+            border-color: #00FF66;
+            outline: none;
+        }
+        button {
+            width: 100%;
+            padding: 1rem;
+            background: #00FF66;
+            color: #060813;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-family: 'Rajdhani', sans-serif;
+            margin-top: 1rem;
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+        }
+    </style>
+</head>
+<body>
 
-<script>
-    // Initialize Supabase client here as well...
-    document.getElementById('scoreForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        
-        const { data, error } = await supabase
-          .from('matchdays')
-          .insert([
-            { 
-               round_number: document.getElementById('roundNum').value,
-               srijit_score: document.getElementById('srijit').value,
-               bitansh_score: document.getElementById('bitansh').value,
-               sandy_score: document.getElementById('sandy').value,
-               debarshi_score: document.getElementById('debarshi').value,
-               soumik_score: document.getElementById('soumik').value
+    <div class="admin-card">
+        <h2>Publish Round Results</h2>
+        <form id="scoreForm">
+            <div class="form-group">
+                <label>Round Number</label>
+                <input type="number" id="roundNum" placeholder="e.g. 21" required>
+            </div>
+            <div class="form-group">
+                <label>Srijit FC Raw Score</label>
+                <input type="number" id="srijit" placeholder="0 - 500" required>
+            </div>
+            <div class="form-group">
+                <label>Bitansh FC Raw Score</label>
+                <input type="number" id="bitansh" placeholder="0 - 500" required>
+            </div>
+            <div class="form-group">
+                <label>Debarshi FC Raw Score</label>
+                <input type="number" id="debarshi" placeholder="0 - 500" required>
+            </div>
+            <div class="form-group">
+                <label>Sandy FC Raw Score</label>
+                <input type="number" id="sandy" placeholder="0 - 500" required>
+            </div>
+            <div class="form-group">
+                <label>Soumik FC Raw Score</label>
+                <input type="number" id="soumik" placeholder="0 - 500" required>
+            </div>
+            <button type="submit">Broadcast to Dashboard</button>
+        </form>
+    </div>
+
+    <script>
+        // Paste the exact same Supabase credentials you put in index.html here
+        const SUPABASE_URL = "https://qtthaelgzxswjhbccrgi.supabase.co"; 
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0dGhhZWxnenhzd2poYmNjcmdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5MjM1NDIsImV4cCI6MjA5ODQ5OTU0Mn0.4STLAIEEqmUOglGAsBp7rklU5udTpfZCyLtf9pr5aDg";                      
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        document.getElementById('scoreForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = e.target.querySelector('button');
+            btn.innerText = "Transmitting...";
+            btn.disabled = true;
+
+            const { data, error } = await supabase
+                .from('matchdays')
+                .insert([
+                    { 
+                        round_number: parseInt(document.getElementById('roundNum').value),
+                        srijit_score: parseInt(document.getElementById('srijit').value),
+                        bitansh_score: parseInt(document.getElementById('bitansh').value),
+                        debarshi_score: parseInt(document.getElementById('debarshi').value),
+                        sandy_score: parseInt(document.getElementById('sandy').value),
+                        soumik_score: parseInt(document.getElementById('soumik').value)
+                    }
+                ]);
+                
+            if (error) {
+                alert("Transmission Fault: " + error.message);
+            } else {
+                alert("Round stats successfully deployed live!");
+                document.getElementById('scoreForm').reset();
             }
-          ]);
-          
-        if(error) alert("Error saving matchday!");
-        else alert("Round published successfully!");
-    });
-</script>
+            
+            btn.innerText = "Broadcast to Dashboard";
+            btn.disabled = false;
+        });
+    </script>
+</body>
+</html>
