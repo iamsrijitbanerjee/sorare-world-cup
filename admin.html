@@ -3,144 +3,220 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL | Admin Score Input</title>
+    <title>TERMINAL | Mobile Score Injection Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Rajdhani:wght@700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body {
-            background-color: #060813;
+            background-color: #04060f;
             color: #fff;
             font-family: 'Inter', sans-serif;
-            padding: 1.5rem;
+            padding: 1rem;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
         }
         .admin-card {
-            background: rgba(18, 26, 46, 0.8);
-            border: 1px solid #1F3354;
+            background: rgba(13, 22, 43, 0.9);
+            border: 1px solid #1c3254;
             padding: 1.5rem;
             border-radius: 16px;
             width: 100%;
-            max-width: 450px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 480px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
         }
         h2 {
             font-family: 'Rajdhani', sans-serif;
             text-transform: uppercase;
             color: #00E5FF;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0.25rem;
             text-align: center;
+            letter-spacing: 0.5px;
+        }
+        .live-indicator-header {
+            text-align: center;
+            font-size: 0.8rem;
+            color: #8FA3BF;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+            font-family: 'Rajdhani';
+            letter-spacing: 1px;
         }
         .form-group {
             margin-bottom: 1rem;
         }
         label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.72rem;
             color: #8FA3BF;
             text-transform: uppercase;
             margin-bottom: 0.4rem;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 0.3px;
         }
-        input {
+        input, select {
             width: 100%;
-            padding: 0.8rem;
-            background: #03050D;
-            border: 1px solid #1F3354;
+            padding: 0.85rem;
+            background: #02040a;
+            border: 1px solid #1c3254;
             border-radius: 8px;
             color: #fff;
             font-size: 1rem;
+            transition: border-color 0.2s;
         }
-        input:focus {
+        input:focus, select:focus {
             border-color: #00FF66;
             outline: none;
+        }
+        select option {
+            background: #0d111e;
+            color: #fff;
         }
         button {
             width: 100%;
             padding: 1rem;
             background: #00FF66;
-            color: #060813;
+            color: #04060f;
             border: none;
             border-radius: 8px;
-            font-weight: 700;
-            font-size: 1rem;
+            font-weight: 800;
+            font-size: 1.1rem;
             cursor: pointer;
             text-transform: uppercase;
             font-family: 'Rajdhani', sans-serif;
             margin-top: 1rem;
             box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+            letter-spacing: 0.5px;
+        }
+        button:disabled {
+            background: #1c3254;
+            color: #8FA3BF;
+            cursor: not-allowed;
+            box-shadow: none;
         }
     </style>
 </head>
 <body>
 
     <div class="admin-card">
-        <h2>Publish Round Results</h2>
+        <h2>Score Injection Portal</h2>
+        <div class="live-indicator-header" id="activeRoundState">Syncing campaign timeline...</div>
+        
         <form id="scoreForm">
             <div class="form-group">
-                <label>Round Number</label>
-                <input type="number" id="roundNum" placeholder="e.g. 21" required>
+                <label>Target Round Number</label>
+                <input type="number" id="roundNum" placeholder="e.g. 1" required>
             </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <div class="form-group">
+                    <label>Srijit FC Score</label>
+                    <input type="number" id="srijit" placeholder="Raw Score" required>
+                </div>
+                <div class="form-group">
+                    <label>Bitansh FC Score</label>
+                    <input type="number" id="bitansh" placeholder="Raw Score" required>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <div class="form-group">
+                    <label>Debarshi FC Score</label>
+                    <input type="number" id="debarshi" placeholder="Raw Score" required>
+                </div>
+                <div class="form-group">
+                    <label>Sandy FC Score</label>
+                    <input type="number" id="sandy" placeholder="Raw Score" required>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
+                <div class="form-group">
+                    <label>Soumik FC Score</label>
+                    <input type="number" id="soumik" placeholder="Raw Score" required>
+                </div>
+                <div class="form-group">
+                    <label>Arkadeep FC Score</label>
+                    <input type="number" id="arkadeep" placeholder="Raw Score" required>
+                </div>
+            </div>
+
             <div class="form-group">
-                <label>Srijit FC Raw Score</label>
-                <input type="number" id="srijit" placeholder="0 - 500" required>
+                <label>👑 Captain with Highest Single Score</label>
+                <select id="captainBonusClub" required>
+                    <option value="" disabled selected>Choose Winning Captain</option>
+                    <option value="srijit">Srijit FC</option>
+                    <option value="bitansh">Bitansh FC</option>
+                    <option value="debarshi">Debarshi FC</option>
+                    <option value="sandy">Sandy FC</option>
+                    <option value="soumik">Soumik FC</option>
+                    <option value="arkadeep">Arkadeep FC</option>
+                </select>
             </div>
-            <div class="form-group">
-                <label>Bitansh FC Raw Score</label>
-                <input type="number" id="bitansh" placeholder="0 - 500" required>
-            </div>
-            <div class="form-group">
-                <label>Debarshi FC Raw Score</label>
-                <input type="number" id="debarshi" placeholder="0 - 500" required>
-            </div>
-            <div class="form-group">
-                <label>Sandy FC Raw Score</label>
-                <input type="number" id="sandy" placeholder="0 - 500" required>
-            </div>
-            <div class="form-group">
-                <label>Soumik FC Raw Score</label>
-                <input type="number" id="soumik" placeholder="0 - 500" required>
-            </div>
-            <button type="submit">Broadcast to Dashboard</button>
+
+            <button type="submit">Broadcast to Live Dashboard</button>
         </form>
     </div>
 
     <script>
-        // Paste the exact same Supabase credentials you put in index.html here
         const SUPABASE_URL = "https://qtthaelgzxswjhbccrgi.supabase.co"; 
-        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0dGhhZWxnenhzd2poYmNjcmdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5MjM1NDIsImV4cCI6MjA5ODQ5OTU0Mn0.4STLAIEEqmUOglGAsBp7rklU5udTpfZCyLtf9pr5aDg";                      
-        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0dGhhZWxnenhzd2poYmNjcmdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5MjM1NDIsImV4cCI6MjA5ODQ5OTU0Mn0.4STLAIEEqmUOglGAsBp7rklU5udTpfZCyLtf9pr5aDg";              
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function pullActiveTimelineState() {
+            try {
+                let { data: matchdays, error } = await supabaseClient.from('matchdays').select('round_number');
+                if (!error && matchdays && matchdays.length > 0) {
+                    const latestRound = Math.max(...matchdays.map(r => r.round_number || 0));
+                    document.getElementById("activeRoundState").innerText = `Latest Active: Round ${latestRound} (Insert Round ${latestRound + 1})`;
+                    document.getElementById("roundNum").value = latestRound + 1;
+                } else {
+                    document.getElementById("activeRoundState").innerText = "No cloud records found (Initialize Round 1)";
+                    document.getElementById("roundNum").value = 1;
+                }
+            } catch(e) {
+                console.error("Timeline interface error: ", e);
+            }
+        }
 
         document.getElementById('scoreForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
-            const btn = e.target.querySelector('button');
-            btn.innerText = "Transmitting...";
-            btn.disabled = true;
+            const submitBtn = e.target.querySelector('button');
+            submitBtn.innerText = "Transmitting to Supabase...";
+            submitBtn.disabled = true;
 
-            const { data, error } = await supabase
+            const roundInputVal = parseInt(document.getElementById('roundNum').value);
+
+            const recordPayload = {
+                round_number: roundInputVal,
+                srijit_score: parseInt(document.getElementById('srijit').value),
+                bitansh_score: parseInt(document.getElementById('bitansh').value),
+                debarshi_score: parseInt(document.getElementById('debarshi').value),
+                sandy_score: parseInt(document.getElementById('sandy').value),
+                soumik_score: parseInt(document.getElementById('soumik').value),
+                arkadeep_score: parseInt(document.getElementById('arkadeep').value),
+                captain_bonus_club: document.getElementById('captainBonusClub').value
+            };
+
+            const { data, error } = await supabaseClient
                 .from('matchdays')
-                .insert([
-                    { 
-                        round_number: parseInt(document.getElementById('roundNum').value),
-                        srijit_score: parseInt(document.getElementById('srijit').value),
-                        bitansh_score: parseInt(document.getElementById('bitansh').value),
-                        debarshi_score: parseInt(document.getElementById('debarshi').value),
-                        sandy_score: parseInt(document.getElementById('sandy').value),
-                        soumik_score: parseInt(document.getElementById('soumik').value)
-                    }
-                ]);
+                .insert([recordPayload]);
                 
             if (error) {
-                alert("Transmission Fault: " + error.message);
+                alert("Database Synchronization Error: " + error.message);
             } else {
-                alert("Round stats successfully deployed live!");
+                alert(`Round ${roundInputVal} results safely initialized and broadcasted live!`);
                 document.getElementById('scoreForm').reset();
+                pullActiveTimelineState();
             }
             
-            btn.innerText = "Broadcast to Dashboard";
-            btn.disabled = false;
+            submitBtn.innerText = "Broadcast to Live Dashboard";
+            submitBtn.disabled = false;
         });
+
+        pullActiveTimelineState();
     </script>
 </body>
 </html>
