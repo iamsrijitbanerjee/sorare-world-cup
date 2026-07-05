@@ -505,16 +505,16 @@
 
                 <div class="card">
                     <div class="card-title">⭐ Hall of Records</div>
-                    <div style="background: rgba(0,0,0,0.25); padding: 0.8rem; border-radius: 8px; border-left: 3px solid var(--cyber-cyan); margin-bottom: 0.8rem;">
-                        <div style="font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase;">All-Time Single Round Peak</div>
+                    <div style="background: rgba(0,0,0,0.25); padding: 0.8rem; border-radius: 8px; border-left: 3px solid var(--cyber-cyan); margin-bottom: 1rem;">
+                        <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase;">All-Time Single Round Peak</div>
                         <div style="font-size: 1.4rem; font-weight: 800; color: var(--cyber-cyan); font-family: 'Rajdhani'; text-shadow: var(--cyber-cyan-glow);">424 POINTS</div>
                         <div style="font-size: 0.8rem; font-weight: 600;">Bitansh FC</div>
                     </div>
-                    <div style="background: rgba(0,0,0,0.2); padding: 0.5rem 0.8rem; border-radius: 6px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.8rem;">
+                    <div style="background: rgba(0,0,0,0.25); padding: 0.5rem 0.8rem; border-radius: 6px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
                         🥈 Debarshi FC Peak: <b>415 Pts</b> | 🥉 Sandy FC Peak: <b>412 Pts</b>
                     </div>
                     
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);">
                         <span style="color:var(--text-muted)">🏆 Serial Winner (Most 1sts)</span>
                         <span style="font-weight: 700; color: var(--neon-turf);" id="serialWinnerField">-</span>
                     </div>
@@ -522,11 +522,11 @@
                         <span style="color:var(--text-muted)">🥇 Highest Podiums (Top 3s)</span>
                         <span style="font-weight: 700; color: var(--cyber-cyan);" id="highestPodiumsField">-</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);">
                         <span style="color:var(--text-muted)">Gutter Escape Expert (Most 4ths)</span>
                         <span style="font-weight: 700; color: #FFA500;" id="escapeArtistField">-</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.5rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);">
                         <span style="color:var(--text-muted)">☠️ Bottom Containment (5th/6th)</span>
                         <span style="font-weight: 700; color: var(--danger-zone);" id="bottomContainmentField">-</span>
                     </div>
@@ -548,9 +548,6 @@
         const SUPABASE_URL = "https://qtthaelgzxswjhbccrgi.supabase.co"; 
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0dGhhZWxnenhzd2poYmNjcmdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5MjM1NDIsImV4cCI6MjA5ODQ5OTU0Mn0.4STLAIEEqmUOglGAsBp7rklU5udTpfZCyLtf9pr5aDg";              
 
-        // ==========================================
-        // 📊 BALANCED HISTORICAL STRATEGIC DATASET
-        // ==========================================
         const coreHistoricalBaseline = [
             { id: "srijit", name: "Srijit FC", r1: 9, r2: 9, r3: 2, r4: 4, r5: 2, r6: 0, m300: 21, m350: 8, m400: 0, bonus: 0, text: "Tactical pace setter. Leverages the high win premium effectively to sustain long top tier preservation indexing." },
             { id: "bitansh", name: "Bitansh FC", r1: 7, r2: 9, r3: 6, r4: 2, r5: 3, r6: 0, m300: 18, m350: 7, m400: 1, bonus: 0, text: "Holding the single-round milestone record of 424. The gold standard for conversion density across campaigns." },
@@ -562,7 +559,7 @@
 
         let compiledStandings = [];
 
-        async function initializeChampionshipEngine() {
+        async function runChampionshipEngine() {
             let processedCollection = [];
 
             if (SUPABASE_URL.includes("your-project-id")) {
@@ -574,11 +571,13 @@
                     let { data: matchdays, error } = await supabaseClient.from('matchdays').select('*').order('round_number', { ascending: true });
                     
                     if (error || !matchdays || matchdays.length === 0) {
+                        document.getElementById("syncIndicator").innerText = "Sync Status: Connected (Empty Cloud Data - Showing Baseline)";
+                        document.getElementById("syncIndicator").style.color = "var(--cyber-cyan)";
                         processedCollection = evaluateStandingsData(coreHistoricalBaseline);
                         updateDashboardLayout(processedCollection, 0);
                     } else {
                         document.getElementById("syncIndicator").innerText = "Sync Status: Cyber Cloud Synced";
-                        document.getElementById("syncIndicator").style.color = "var(--cyber-cyan)";
+                        document.getElementById("syncIndicator").style.color = "var(--neon-turf)";
                         
                         const maxRoundNum = Math.max(...matchdays.map(r => r.round_number || 0));
                         processedCollection = parseAndInjectCloudRecords(matchdays);
@@ -693,7 +692,7 @@
 
             parsed.forEach(c => {
                 let podiumsCount = c.r1 + c.r2 + c.r3;
-                let gutterCombined = c.r5 + c.r6; // 5th till date + 6th onwards
+                let gutterCombined = c.r5 + c.r6; 
 
                 if(c.r1 > highest1sts) { highest1sts = c.r1; serialWinner = `${c.name} (${c.r1})`; }
                 if(podiumsCount > highestPodiums) { highestPodiums = podiumsCount; podiumKing = `${c.name} (${podiumsCount})`; }
@@ -752,4 +751,53 @@
             });
 
             const leaderDelta = (data[0].avg - data[1].avg).toFixed(2);
-            const secondaryDelta = (data[2].avg - data[3].avg).
+            const secondaryDelta = (data[2].avg - data[3].avg).toFixed(2);
+            
+            document.getElementById("tickerDeltas").innerText = `⚽ DYNAMIC REPORT: ${data[0].name} leads at ${data[0].avg} Pts/Round • Gap to trailing ${data[1].name} sits at exactly ${leaderDelta} Avg Pts • Mid-tier threshold margin calculated at ${secondaryDelta} Pts.`;
+
+            const radarContainer = document.getElementById("radarContainer");
+            radarContainer.innerHTML = `
+                <div style="background: rgba(14,21,38,0.5); border: 1px solid var(--border-neon); padding: 1.2rem; border-radius: 12px; box-shadow: var(--neon-glow);">
+                    <div style="font-weight: 700; font-family:'Rajdhani'; color: var(--neon-turf); font-size:1.2rem;">${data[0].name} vs ${data[1].name}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem; line-height:1.5;">The Title Fight: ${data[0].name}'s margin over ${data[1].name} rests at <strong>${leaderDelta} Average Points</strong> per game week.</div>
+                </div>
+                <div style="background: rgba(14,21,38,0.5); border: 1px solid var(--border-neon); padding: 1.2rem; border-radius: 12px; box-shadow: var(--cyber-cyan-glow);">
+                    <div style="font-weight: 700; font-family:'Rajdhani'; color: var(--cyber-cyan); font-size:1.2rem;">${data[2].name} vs ${data[3].name}</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.35rem; line-height:1.5;">The Mid-Field Derby: 3rd and 4th positions are currently locked within a split of <strong>${secondaryDelta} Average Points</strong>.</div>
+                </div>
+            `;
+        }
+
+        function activateScoutSpotlight(clubId, elementRow) {
+            document.querySelectorAll("#leagueRows tr").forEach(r => r.classList.remove("active-row"));
+            elementRow.classList.add("active-row");
+
+            const selectedTeam = compiledStandings.find(c => c.id === clubId);
+            if(selectedTeam) {
+                document.getElementById("spotlightName").innerText = selectedTeam.name;
+                document.getElementById("spotlightDesc").innerText = selectedTeam.text;
+                document.getElementById("spotlightTotalPoints").innerText = selectedTeam.total + " Pts";
+                document.getElementById("spotlightBonusPoints").innerText = (selectedTeam.bonus >= 0 ? '+' : '') + selectedTeam.bonus + " Pts Added";
+                
+                document.getElementById("winRateValue").innerText = selectedTeam.winPct + "%";
+                document.getElementById("winRateBar").style.width = selectedTeam.winPct + "%";
+                
+                document.getElementById("podiumValue").innerText = selectedTeam.podiumPct + "%";
+                document.getElementById("podiumBar").style.width = selectedTeam.podiumPct + "%";
+            }
+        }
+
+        function toggleView(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+
+            ['championship-tab', 'milestone-tab', 'radar-tab'].forEach(id => {
+                document.getElementById(id).classList.add('hidden-view');
+            });
+            document.getElementById(tabId).classList.remove('hidden-view');
+        }
+
+        runChampionshipEngine();
+    </script>
+</body>
+</html>
