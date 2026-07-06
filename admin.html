@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TERMINAL | Mobile Score Injection Portal</title>
+    <title>TERMINAL | Adaptive Administration Portal</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Rajdhani:wght@700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -55,7 +55,7 @@
             font-weight: 700;
             letter-spacing: 0.3px;
         }
-        input, select {
+        input, select, textarea {
             width: 100%;
             padding: 0.85rem;
             background: #02040a;
@@ -65,13 +65,15 @@
             font-size: 1rem;
             transition: border-color 0.2s;
         }
-        input:focus, select:focus {
+        input:focus, select:focus, textarea:focus {
             border-color: #00FF66;
             outline: none;
         }
-        select option {
-            background: #0d111e;
-            color: #fff;
+        .helper-text-note {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            margin-top: 0.25rem;
+            display: block;
         }
         button {
             width: 100%;
@@ -106,39 +108,39 @@
         <form id="scoreForm">
             <div class="form-group">
                 <label>Target Round Number</label>
-                <input type="number" id="roundNum" placeholder="e.g. 1" required>
+                <input type="number" id="roundNum" placeholder="e.g. 30" required>
             </div>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
                 <div class="form-group">
                     <label>Srijit FC Score</label>
-                    <input type="number" id="srijit" placeholder="Raw Score" required>
+                    <input type="number" id="srijit" placeholder="Leave blank if absent">
                 </div>
                 <div class="form-group">
                     <label>Bitansh FC Score</label>
-                    <input type="number" id="bitansh" placeholder="Raw Score" required>
+                    <input type="number" id="bitansh" placeholder="Leave blank if absent">
                 </div>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
                 <div class="form-group">
                     <label>Debarshi FC Score</label>
-                    <input type="number" id="debarshi" placeholder="Raw Score" required>
+                    <input type="number" id="debarshi" placeholder="Leave blank if absent">
                 </div>
                 <div class="form-group">
                     <label>Sandy FC Score</label>
-                    <input type="number" id="sandy" placeholder="Raw Score" required>
+                    <input type="number" id="sandy" placeholder="Leave blank if absent">
                 </div>
             </div>
 
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
                 <div class="form-group">
                     <label>Soumik FC Score</label>
-                    <input type="number" id="soumik" placeholder="Raw Score" required>
+                    <input type="number" id="soumik" placeholder="Leave blank if absent">
                 </div>
                 <div class="form-group">
                     <label>Arkadeep FC Score</label>
-                    <input type="number" id="arkadeep" placeholder="Raw Score" required>
+                    <input type="number" id="arkadeep" placeholder="Leave blank if absent">
                 </div>
             </div>
 
@@ -155,6 +157,12 @@
                 </select>
             </div>
 
+            <div class="form-group">
+                <label>🎤 Press Room Commentary / Winner Quote</label>
+                <textarea id="winnerQuote" placeholder="Enter post-match trash-talk or tactical declaration..." rows="2"></textarea>
+                <span class="helper-text-note">Broadcasts directly down underneath the main dashboard header.</span>
+            </div>
+
             <button type="submit">Broadcast to Live Dashboard</button>
         </form>
     </div>
@@ -168,15 +176,15 @@
             try {
                 let { data: matchdays, error } = await supabaseClient.from('matchdays').select('round_number');
                 if (!error && matchdays && matchdays.length > 0) {
-                    const latestRound = Math.max(...matchdays.map(r => r.round_number || 0));
+                    const latestRound = Math.max(...matchdays.map(r => r.round_number || 0)) + 29;
                     document.getElementById("activeRoundState").innerText = `Latest Active: Round ${latestRound} (Insert Round ${latestRound + 1})`;
                     document.getElementById("roundNum").value = latestRound + 1;
                 } else {
-                    document.getElementById("activeRoundState").innerText = "No cloud records found (Initialize Round 1)";
-                    document.getElementById("roundNum").value = 1;
+                    document.getElementById("activeRoundState").innerText = "Latest Active: Round 29 (Insert Round 30)";
+                    document.getElementById("roundNum").value = 30;
                 }
             } catch(e) {
-                console.error("Timeline interface error: ", e);
+                console.error("Timeline error: ", e);
             }
         }
 
@@ -184,20 +192,26 @@
             e.preventDefault();
             
             const submitBtn = e.target.querySelector('button');
-            submitBtn.innerText = "Transmitting to Supabase...";
+            submitBtn.innerText = "Transmitting metrics...";
             submitBtn.disabled = true;
 
-            const roundInputVal = parseInt(document.getElementById('roundNum').value);
+            const roundInputVal = parseInt(document.getElementById('roundNum').value) - 29;
+
+            const parseField = (id) => {
+                const val = document.getElementById(id).value;
+                return val === "" ? null : parseInt(val);
+            };
 
             const recordPayload = {
                 round_number: roundInputVal,
-                srijit_score: parseInt(document.getElementById('srijit').value),
-                bitansh_score: parseInt(document.getElementById('bitansh').value),
-                debarshi_score: parseInt(document.getElementById('debarshi').value),
-                sandy_score: parseInt(document.getElementById('sandy').value),
-                soumik_score: parseInt(document.getElementById('soumik').value),
-                arkadeep_score: parseInt(document.getElementById('arkadeep').value),
-                captain_bonus_club: document.getElementById('captainBonusClub').value
+                srijit_score: parseField('srijit'),
+                bitansh_score: parseField('bitansh'),
+                debarshi_score: parseField('debarshi'),
+                sandy_score: parseField('sandy'),
+                soumik_score: parseField('soumik'),
+                arkadeep_score: parseField('arkadeep'),
+                captain_bonus_club: document.getElementById('captainBonusClub').value,
+                winner_quote: document.getElementById('winnerQuote').value || null
             };
 
             const { data, error } = await supabaseClient
@@ -205,9 +219,9 @@
                 .insert([recordPayload]);
                 
             if (error) {
-                alert("Database Synchronization Error: " + error.message);
+                alert("Database Sync Error: " + error.message);
             } else {
-                alert(`Round ${roundInputVal} results safely initialized and broadcasted live!`);
+                alert(`Round results safely initialized and broadcasted live!`);
                 document.getElementById('scoreForm').reset();
                 pullActiveTimelineState();
             }
