@@ -176,12 +176,12 @@
             try {
                 let { data: matchdays, error } = await supabaseClient.from('matchdays').select('round_number');
                 if (!error && matchdays && matchdays.length > 0) {
-                    const latestRound = Math.max(...matchdays.map(r => r.round_number || 0)) + 29;
+                    const latestRound = Math.max(...matchdays.map(r => r.round_number || 0)) + 28;
                     document.getElementById("activeRoundState").innerText = `Latest Active: Round ${latestRound} (Insert Round ${latestRound + 1})`;
                     document.getElementById("roundNum").value = latestRound + 1;
                 } else {
-                    document.getElementById("activeRoundState").innerText = "Latest Active: Round 29 (Insert Round 30)";
-                    document.getElementById("roundNum").value = 30;
+                    document.getElementById("activeRoundState").innerText = "Latest Active: Round 28 (Insert Round 29)";
+                    document.getElementById("roundNum").value = 29;
                 }
             } catch(e) {
                 console.error("Timeline error: ", e);
@@ -195,7 +195,7 @@
             submitBtn.innerText = "Transmitting metrics...";
             submitBtn.disabled = true;
 
-            const roundInputVal = parseInt(document.getElementById('roundNum').value) - 29;
+            const roundInputVal = parseInt(document.getElementById('roundNum').value) - 28;
 
             const parseField = (id) => {
                 const val = document.getElementById(id).value;
