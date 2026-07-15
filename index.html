@@ -614,7 +614,7 @@
                     <div class="card-title">📊 Adaptive Points Guide</div>
                     <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 0.4rem; text-transform: uppercase; font-weight: bold;">Dynamic Distribution Scale</div>
                     <div style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 0.6rem;">
-                        🔹 <b>5 Participants:</b> 15, 10, 6, 4, 0<br>
+                        🔹 <b>5 or less Participants:</b> 15, 10, 6, 4, 0<br>
                         🔹 <b>6 Participants:</b> 15, 10, 6, 3, 1, 0
                     </div>
                     <div style="font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.3rem; font-weight: bold;">Tactical Streak System</div>
@@ -651,7 +651,7 @@
                                     <div class="fut-stat-item"><span class="fut-stat-lbl">VIS</span><span class="fut-stat-val" id="futVis">-</span></div>
                                 </div>
                                 <div class="fut-stats-filler">
-                                    <span>PTS: <b id="futTotalPoints">-</b></span>
+                                    <span>TOTAL: <b id="futTotalPoints">-</b></span>
                                     <span>MP: <b id="futMatches">-</b></span>
                                 </div>
                             </div>
@@ -667,7 +667,7 @@
                         <div style="font-size: 0.8rem; font-weight: 600;">Bitansh FC</div>
                     </div>
                     <div style="background: rgba(0,0,0,0.25); padding: 0.5rem 0.8rem; border-radius: 6px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1rem;">
-                        🥈 Debarshi FC Peak: <b>415 Pts</b> | 🥉 Sandy FC Peak: <b>412 Pts</b>
+                        🥈 Debarshi FC Peak: <b>415 Pts</b> | 🥉 Sandy FC Peak: <b>422 Pts</b>
                     </div>
                     
                     <div style="display: flex; justify-content: space-between; font-size: 0.85rem; padding: 0.6rem 0; border-bottom: 1px solid rgba(255,255,255,0.04);">
@@ -697,7 +697,7 @@
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF0dGhhZWxnenhzd2poYmNjcmdpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5MjM1NDIsImV4cCI6MjA5ODQ5OTU0Mn0.4STLAIEEqmUOglGAsBp7rklU5udTpfZCyLtf9pr5aDg";              
 
         const coreHistoricalBaseline = [
-            { id: "srijit", name: "Srijit FC", r1: 10, r2: 9, r3: 2, r4: 4, r5: 2, r6: 0, m300: 23, m350: 8, m400: 0, bonus: 0, text: "Tactical pace setter. Leverages the high win premium effectively to sustain long top tier preservation indexing.", currentWinStreak: 1, currentPodiumStreak: 2, currentLastStreak: 0, lastScores: [342, 311, 300] },
+            { id: "srijit", name: "Srijit FC", r1: 10, r2: 9, r3: 2, r4: 4, r5: 2, r6: 0, m300: 22, m350: 8, m400: 0, bonus: 0, text: "Tactical pace setter. Leverages the high win premium effectively to sustain long top tier preservation indexing.", currentWinStreak: 1, currentPodiumStreak: 2, currentLastStreak: 0, lastScores: [342, 311, 300] },
             { id: "bitansh", name: "Bitansh FC", r1: 7, r2: 9, r3: 6, r4: 3, r5: 3, r6: 0, m300: 18, m350: 7, m400: 1, bonus: 0, text: "Holding the single-round milestone record of 424. The gold standard for conversion density across campaigns.", currentWinStreak: 0, currentPodiumStreak: 0, currentLastStreak: 0, lastScores: [290, 315, 245] },
             { id: "debarshi", name: "Debarshi FC", r1: 4, r2: 5, r3: 8, r4: 10, r5: 1, r6: 0, m300: 14, m350: 3, m400: 1, bonus: 3, text: "High variance danger asset with a 415 ceiling. Shows high durability index with low bottom tier matching exposure.", currentWinStreak: 0, currentPodiumStreak: 1, currentLastStreak: 0, lastScores: [280, 260, 263] },
             { id: "sandy", name: "Sandy FC", r1: 6, r2: 3, r3: 8, r4: 7, r5: 3, r6: 0, m300: 13, m350: 6, m400: 1, bonus: 0, text: "Midfield stabilizer profile. Relies on converting high mid-tier margins to absorb strategic fluctuations.", currentWinStreak: 0, currentPodiumStreak: 0, currentLastStreak: 2, lastScores: [220, 240, 222] },
@@ -785,7 +785,7 @@
 
                 dayScores.sort((a,b) => b.score - a.score);
                 
-                if (participantCount === 5) {
+                if (participantCount <= 5) {
                     dayScores.forEach((team, idx) => {
                         if (idx === 0) workingRegistry[team.id].r1++;
                         if (idx === 1) workingRegistry[team.id].r2++;
@@ -864,7 +864,6 @@
                 const avgFormScore = club.lastScores.length > 0 ? (sumScores / club.lastScores.length) : 0;
                 const formRating = Math.min(Math.max(Math.round((avgFormScore / 400) * 100), 10), 99);
 
-                // Vision stat calculation map based dynamically on compiled bonus metrics
                 const visionRating = Math.min(Math.max(Math.round(50 + (club.bonus * 2)), 10), 99);
 
                 return {
@@ -1012,10 +1011,8 @@
                 
                 cardContainer.classList.remove("hidden-view");
                 
-                // Composite dynamic weighting metrics calculation formula
                 const overallRating = Math.round((selectedTeam.winPct + selectedTeam.podiumPct + selectedTeam.frmRating + selectedTeam.visRating) / 4);
 
-                // Assign trophy cabinet logic directly via rank index variables
                 let rankEmblem = "⚽";
                 if(currentRank === 1) { rankEmblem = "🥇"; cardBody.className = "fut-card gold-tier"; }
                 else if(currentRank === 2) { rankEmblem = "🥈"; cardBody.className = "fut-card"; }
